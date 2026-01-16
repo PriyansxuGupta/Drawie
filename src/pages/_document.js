@@ -22,7 +22,7 @@ export default function Document() {
         <meta name="generator" content="Next.js" />
         <meta name="robots" content="index, follow" />
 
-        <link rel="canonical" href="https://drawie.yourdomain.com" />
+        <link rel="canonical" href="https://drawie.js.org" />
 
         <link rel="manifest" href="/manifest.json" />
 
@@ -36,7 +36,7 @@ export default function Document() {
           content="A simple and powerful online drawing app to sketch ideas instantly."
         />
         <meta property="og:image" content="/logo.jpg" />
-        <meta property="og:url" content="https://drawie.yourdomain.com" />
+        <meta property="og:url" content="https://drawie.js.org" />
         <meta property="og:site_name" content="Drawie" />
 
         <meta name="twitter:card" content="summary_large_image" />
