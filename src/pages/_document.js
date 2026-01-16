@@ -9,7 +9,7 @@ export default function Document() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
 
-        <meta name="title" content="Drawie" />
+        <meta name="title" content="Drawie - online drawing app" />
         <meta
           name="description"
           content="Drawie is a fast, minimal online drawing app to sketch, draw, and create freely on any device."
