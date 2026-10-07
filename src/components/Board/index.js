@@ -74,8 +74,15 @@ export default function Board() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    context.scale(dpr, dpr);
 
     let lastX = 0, lastY = 0;
 
@@ -104,27 +111,39 @@ export default function Board() {
     const stopDrawing = () => {
       if (shouldDraw.current) {
         shouldDraw.current = false;
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
         drawHistory.current.push(imageData);
         historyPointer.current = drawHistory.current.length - 1;
       }
     };
 
-    const handleMouseDown = (e) => startDrawing(e.clientX, e.clientY);
-    const handleMouseMove = (e) => draw(e.clientX, e.clientY);
-    const handleMouseUp = stopDrawing;
-    const handleMouseOut = stopDrawing;
-    const handleTouchStart = (e) => startDrawing(e.touches[0].clientX, e.touches[0].clientY);
-    const handleTouchMove = (e) => draw(e.touches[0].clientX, e.touches[0].clientY);
-    const handleTouchEnd = stopDrawing;
+    const handleMouseDown = (e) => { e.preventDefault(); startDrawing(e.clientX, e.clientY); };
+    const handleMouseMove = (e) => { e.preventDefault(); draw(e.clientX, e.clientY); };
+    const handleMouseUp = (e) => { e.preventDefault(); stopDrawing(); };
+    const handleMouseOut = (e) => { e.preventDefault(); stopDrawing(); };
+    const handleTouchStart = (e) => { e.preventDefault(); startDrawing(e.touches[0].clientX, e.touches[0].clientY); };
+    const handleTouchMove = (e) => { e.preventDefault(); draw(e.touches[0].clientX, e.touches[0].clientY); };
+    const handleTouchEnd = (e) => { e.preventDefault(); stopDrawing(); };
 
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mouseup", handleMouseUp);
     canvas.addEventListener("mouseout", handleMouseOut);
-    canvas.addEventListener("touchstart", handleTouchStart);
-    canvas.addEventListener("touchmove", handleTouchMove);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
     canvas.addEventListener("touchend", handleTouchEnd);
+
+    const handleResize = () => {
+      const newDpr = window.devicePixelRatio || 1;
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      canvas.width = newWidth * newDpr;
+      canvas.height = newHeight * newDpr;
+      canvas.style.width = newWidth + 'px';
+      canvas.style.height = newHeight + 'px';
+      context.scale(newDpr, newDpr);
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
@@ -134,12 +153,13 @@ export default function Board() {
       canvas.removeEventListener("touchstart", handleTouchStart);
       canvas.removeEventListener("touchmove", handleTouchMove);
       canvas.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <>
-      <canvas ref={canvasRef} style={{ cursor: 'crosshair' }}></canvas>
+      <canvas ref={canvasRef} style={{ cursor: 'crosshair', display: 'block', touchAction: 'none' }}></canvas>
     </>
   );
 }

@@ -15,46 +15,62 @@ export default function Menu() {
     dispatch(actionItemClick(actionItem));
   };
 
+  const btnClass = (isActive) =>
+    `cursor-pointer flex justify-center items-center h-9 w-9 rounded-lg transition-all duration-200 ${
+      isActive ? "bg-text2 shadow-md scale-105" : "hover:bg-white/10 hover:scale-105"
+    }`;
+
   return (
-    <div className="absolute px-5 py-1 flex justify-between md:max-w-full left-1/2 top-6 rounded-md md:rounded-sm border border-0.5 border-border1 bg-background1 shadow-shadow1 transform -translate-x-1/2 space-x-3">
-      <div
-        className={`cursor-pointer flex justify-center items-center h-8 w-8 rounded-md ${
-          activeMenuItem === MENU_ITEMS.PENCIL ? "bg-text2" : ""
-        }`}
+    <nav
+      className="absolute z-50 px-3 py-2 flex items-center gap-2 left-1/2 top-4 -translate-x-1/2 rounded-2xl border border-white/10 bg-background1/80 backdrop-blur-md shadow-xl"
+      aria-label="Drawing tools"
+    >
+      <button
+        className={btnClass(activeMenuItem === MENU_ITEMS.PENCIL)}
         onClick={() => handleClick(MENU_ITEMS.PENCIL)}
+        aria-label="Pencil"
+        title="Pencil"
       >
-        <Pencil className="text-text1" size={16} />
-      </div>
+        <Pencil className="text-text1" size={18} strokeWidth={2} />
+      </button>
 
-      <div
-        className={`cursor-pointer flex justify-center items-center h-8 w-8 rounded-md ${
-          activeMenuItem === MENU_ITEMS.ERASER ? "bg-text2" : ""
-        }`}
+      <button
+        className={btnClass(activeMenuItem === MENU_ITEMS.ERASER)}
         onClick={() => handleClick(MENU_ITEMS.ERASER)}
+        aria-label="Eraser"
+        title="Eraser"
       >
-        <Eraser className="text-text1" size={16} />
-      </div>
+        <Eraser className="text-text1" size={18} strokeWidth={2} />
+      </button>
 
-      <div
-        className="cursor-pointer flex justify-center items-center h-8 w-8 rounded-md"
+      <div className="w-px h-5 bg-white/10 mx-0.5" />
+
+      <button
+        className={btnClass(false)}
         onClick={() => handleActionItemClick(MENU_ITEMS.UNDO)}
+        aria-label="Undo"
+        title="Undo"
       >
-        <Undo className="text-text1" size={16} />
-      </div>
+        <Undo className="text-text1" size={18} strokeWidth={2} />
+      </button>
 
-      <div
-        className="cursor-pointer flex justify-center items-center h-8 w-8 rounded-md"
+      <button
+        className={btnClass(false)}
         onClick={() => handleActionItemClick(MENU_ITEMS.REDO)}
+        aria-label="Redo"
+        title="Redo"
       >
-        <Redo className="text-text1" size={16} />
-      </div>
+        <Redo className="text-text1" size={18} strokeWidth={2} />
+      </button>
 
-      <div
-        className="cursor-pointer flex justify-center items-center h-8 w-8 rounded-md"
+      <button
+        className={btnClass(false)}
         onClick={() => handleActionItemClick(MENU_ITEMS.DOWNLOAD)}
+        aria-label="Download"
+        title="Download"
       >
-        <ArrowDownCircle className="text-text1" size={16} />
-      </div>
-    </div>
+        <ArrowDownCircle className="text-text1" size={18} strokeWidth={2} />
+      </button>
+    </nav>
   );
 }
