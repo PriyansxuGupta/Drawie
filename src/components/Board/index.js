@@ -48,8 +48,10 @@ export default function Board() {
         actionMenuItem === MENU_ITEMS.REDO
       )
         historyPointer.current += 1;
-      const imageData = drawHistory.current[historyPointer.current];
-      context.putImageData(imageData, 0, 0);
+      if (drawHistory.current[historyPointer.current]) {
+        const imageData = drawHistory.current[historyPointer.current];
+        context.putImageData(imageData, 0, 0);
+      }
     }
     dispatch(actionItemClick(null));
   }, [actionMenuItem, dispatch]);
@@ -84,6 +86,15 @@ export default function Board() {
     canvas.style.height = height + 'px';
     context.scale(dpr, dpr);
 
+    // White background
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, width, height);
+
+    // Initialize history with blank white canvas
+    const blank = context.getImageData(0, 0, width, height);
+    drawHistory.current = [blank];
+    historyPointer.current = 0;
+
     let lastX = 0, lastY = 0;
 
     const startDrawing = (x, y) => {
@@ -111,6 +122,8 @@ export default function Board() {
     const stopDrawing = () => {
       if (shouldDraw.current) {
         shouldDraw.current = false;
+        // Trim future history if we undid before drawing
+        drawHistory.current = drawHistory.current.slice(0, historyPointer.current + 1);
         const imageData = context.getImageData(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
         drawHistory.current.push(imageData);
         historyPointer.current = drawHistory.current.length - 1;
